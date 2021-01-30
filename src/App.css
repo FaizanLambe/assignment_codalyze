@@ -1,0 +1,41 @@
+.operationBtn{
+  margin: 10px 20px;
+  border: 1px solid transparent;
+  cursor: pointer;
+  height: 32px;
+  padding: 4px 15px;
+  font-size: 14px;
+  border-radius: 3px;
+  background: #fff;
+  border-color: #d9d9d9;
+}
+
+.gg{
+  display: flex;
+  -webkit-box-pack: center;
+  justify-content: center;
+  -webkit-box-align: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+select{
+  border: 0;
+  background: #fff;
+  border-color: #d9d9d9;
+  padding: 9px 24px 7px;
+  padding-left: 4px;
+}
+
+b{
+  margin-top: 70px;
+}
+
+#deleteBtn{
+  background: #fff;
+  border: 0px solid transparent;
+  cursor: pointer;
+  height: 32px;
+  padding: 4px 15px;
+  font-size: 14px;
+}
