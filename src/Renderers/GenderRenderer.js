@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 
-function GendersRenderer(props) {
+function GenderRenderer(props) {
     const[gender, setGender] = useState(props.value);
 
     const onGenderChange = (event) => {
@@ -17,4 +17,4 @@ function GendersRenderer(props) {
     )
 }
 
-export default GendersRenderer;
+export default GenderRenderer;

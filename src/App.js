@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
-import { AgGridReact} from 'ag-grid-react';
-import GenderRenderer from './Renderers/GenderRenderer';
+import { AgGridReact } from 'ag-grid-react';
+import GenderRenderer from './Renderers/GenderRenderer.js';
 import CountryRenderer from './Renderers/CountryRenderer';
 import CityRenderer from './Renderers/CityRenderer';
 import DeleteRenderer from './Renderers/DeleteRenderer';
+import DateRenderer from './Renderers/DateRenderer.js';
 import './App.css'
 
 import 'ag-grid-community/dist/styles/ag-grid.css';
@@ -14,37 +15,52 @@ class App extends Component {
         super(props);
         this.state = {
             columnDefs: [
-                { headerName: "Id", field: "Id", width: 140, checkboxSelection: true, sortable: true, filter: true, editable: true, resizable: true },
+                { headerName: "Id", field: "Id", width: 120, checkboxSelection: true, sortable: true, filter: true, editable: true, resizable: true },
                 { headerName: "Name", field: "Name", width: 140, sortable: true, filter: true, editable: true, resizable: true },
                 { headerName: "Email", field: "Email", width: 200, sortable: true, filter: true, editable: true, resizable: true },
                 { headerName: "Gender", field: "Gender", cellRenderer: 'genderRenderer', cellRendererParams: { onGenderChange: this.onGenderChange }, width: 140, sortable: true, filter: true, resizable: true },
-                { headerName: "DOB", field: "DOB", width: 140, sortable: true, filter: true, editable: true, resizable: true },
+                { headerName: "DOB", field: "DOB", cellRenderer: 'dateRenderer', cellRendererParams: { onDateChange: this.onDateChange }, width: 160, sortable: true, filter: true, editable: true, resizable: true },
                 { headerName: "Country", field: "Country", cellRenderer: 'countryRenderer', cellRendererParams: { onCountryChange: this.onCountryChange }, width: 140, sortable: true, filter: true, resizable: true },
-                { headerName: "City", field: "City", cellRenderer: 'cityRenderer', cellRendererParams: { onCityChange: this.onCityChange }, width: 140, sortable: true, filter: true, resizable: true},
+                { headerName: "City", field: "City", cellRenderer: 'cityRenderer', cellRendererParams: { onCityChange: this.onCityChange }, width: 140, sortable: true, filter: true, resizable: true },
                 { headerName: " ", field: "Delete", cellRenderer: 'deleteRenderer' }
             ],
+            displayColumnDefs: [
+                { headerName: "Id", field: "Id", width: 120,sortable: true, filter: true, resizable: true },
+                { headerName: "Name", field: "Name", width: 140, sortable: true, filter: true, resizable: true },
+                { headerName: "Email", field: "Email", width: 200, sortable: true, filter: true, resizable: true },
+                { headerName: "Gender", field: "Gender", cellRenderer: 'genderRenderer', cellRendererParams: { onGenderChange: this.onGenderChange }, width: 140, sortable: true, filter: true, resizable: true },
+                { headerName: "DOB", field: "DOB", cellRenderer: 'dateRenderer', cellRendererParams: { onDateChange: this.onDateChange }, width: 160, sortable: true, filter: true, resizable: true },
+                { headerName: "Country", field: "Country", cellRenderer: 'countryRenderer', cellRendererParams: { onCountryChange: this.onCountryChange }, width: 140, sortable: true, filter: true, resizable: true },
+                { headerName: "City", field: "City", cellRenderer: 'cityRenderer', cellRendererParams: { onCityChange: this.onCityChange }, width: 140, sortable: true, filter: true, resizable: true },
+            ],
             rowData: [
-                { "Id": 1, "Name": "Faizan", "Email": "faizan@gmail.com", "Gender": "", "DOB": "03-03-1998", "Country": "India", "City": "Mumbai" },
-                { "Id": 2, "Name": "Aditi", "Email": "aditi@gmail.com", "Gender": "Female", "DOB": "21-06-1994", "Country": "India", "City": "Mira" },
-                { "Id": 3, "Name": "Kiran", "Email": "kiran@gmail.com", "Gender": "Male", "DOB": "13-12-1997", "Country": "US", "City": "ManHatton" },
+                { 'Id': '1', 'Name': "kishor", 'Email': "kishor@gmail.com", 'Gender': "", 'DOB': "", 'Country': "", 'City': "" },
+
             ],
             suppressAggFuncInHeader: true,
 
             frameworkComponents: {
                 genderRenderer: GenderRenderer,
                 countryRenderer: CountryRenderer,
-                cityRenderer:CityRenderer,
-                deleteRenderer: DeleteRenderer
+                cityRenderer: CityRenderer,
+                deleteRenderer: DeleteRenderer,
+                dateRenderer: DateRenderer
             }
         }
         this.onGenderChange = this.onGenderChange.bind(this)
         this.onCountryChange = this.onCountryChange.bind(this)
         this.onCityChange = this.onCityChange.bind(this)
+        this.onDateChange = this.onDateChange.bind(this)
     }
 
-    onGenderChange = (gender) => {
-        this.setState(()=>({Gender: this.state.rowData.push(gender)}));
-        console.log("Gender Change", gender)
+    onDateChange = () => {
+        this.setState(() => ({ DOB: this.state.rowData.push() }));
+        console.log("Gender Change")
+    }
+
+    onGenderChange = (setGender) => {
+
+        console.log("Gender Change", setGender)
     }
 
     onCountryChange = (country) => {
@@ -56,13 +72,19 @@ class App extends Component {
     }
 
     componentDidMount() {
-        const json = localStorage.getItem('dat')
-        const items = JSON.parse(json)
-        this.setState(() => ({ items }))
+        const json = localStorage.getItem("data");
+        const items = JSON.parse(json);
+        if(items.length !== 1) {
+            this.setState({
+                ...this.state,
+                rowData: items
+            });
+        }
       }
-      componentDidUpdate(prevProps, prevStates){
+
+    componentDidUpdate(prevProps, prevStates){
         const json = JSON.stringify(this.state.rowData)
-        localStorage.setItem('dat', json)
+        localStorage.setItem('data', json)
       }
 
     deleteSelected = () => {
@@ -78,7 +100,7 @@ class App extends Component {
         if (selectedData.length !== 0) {
             selectedData.map(item => {
                 row_data.map((obj, index) => {
-                    if(item.Name === obj.Name) {
+                    if (item.Name === obj.Name) {
                         row_data.splice(index, 1);
                         console.log('row_data', row_data);
                     }
@@ -91,18 +113,16 @@ class App extends Component {
     }
 
     submitData = () => {
-        
-        localStorage.setItem('dat',JSON.stringify(this.state.rowData))
-        var c=JSON.parse(localStorage.getItem('dat'));
-        console.log(c);
+        let row_data = [];
+        this.gridApi.forEachNode((node) => row_data.push(node.data));
+        localStorage.setItem("data", JSON.stringify(row_data));
         alert("Data submitted");
-
-    }
+    };
 
     addData = () => {
 
-        const inp = this.gridApi.applyTransaction({ add: [{"Id": '' , "Name": "", "Email": "", "Gender": "", "DOB": "", "Country": "", "City": ""}] })
-        
+        this.gridApi.applyTransaction({ add: [{ "Id": '', "Name": "", "Email": "", "Gender": "", "DOB": "", "Country": "", "City": "" }] })
+    
     }
 
     render() {
@@ -122,7 +142,13 @@ class App extends Component {
                     />
                 </div>
                 <b>Submitted Data</b>
-                <p></p>
+                <div className="ag-theme-alpine" style={{ height: 400, width: 1245 }}>
+                    <AgGridReact
+                        columnDefs={this.state.columnDefs}
+                        rowData={this.state.rowData}    
+                        frameworkComponents={this.state.frameworkComponents}
+                    />
+                </div>
             </div>
         )
     }
